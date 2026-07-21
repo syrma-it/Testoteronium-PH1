@@ -1,0 +1,19 @@
+# Environment variables (API keys, passwords)
+.env
+.env.local
+
+# Node modules (heavy, unnecessary to push)
+node_modules/
+
+# Python cache
+__pycache__/
+
+# Secrets and Certificates
+*.key
+*.pem
+credentials.json
+secrets.json
+
+# OS generated files
+.DS_Store
+Thumbs.db

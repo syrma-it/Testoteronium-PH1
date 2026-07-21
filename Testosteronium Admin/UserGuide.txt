@@ -1,0 +1,60 @@
+#Start form scratch
+
+
+#Github Pushing
+
+#Github resignin
+
+ # Install GitHub CLI
+    sudo apt install gh
+
+ # Log in (it will open your browser to authenticate)
+    gh auth login
+
+ # Push your code
+    git push -u origin main
+
+    #Steps to Push
+        Initialize Git
+        git init
+
+    #Stage all files
+        git add .
+
+    #Create initial commit
+        git commit -m "Initial commit"
+
+    #Set main branch & connect remote
+        git branch -M main
+        git remote add origin https://github.com/lovely-zora/Testosteronium-Double-Console-PH1.git
+
+    #Push to GitHub
+        git push -u origin main
+
+-----------------------------------------------------------------------------
+
+#Start Fronted
+
+    cd frontend/
+    npx create-react-app
+    npm install react-router-dom
+    npm start
+
+
+#Start Backend
+
+    cd backend
+    python3 -m venv venv
+    source venv/bin/activate       # on Windows: venv\Scripts\activate
+    pip install -r requirements.txt
+    python app.py
+
+
+#Start Agent Backend
+
+    cd agent/
+    python3 -m venv venv
+    source venv/bin/activate       # on Windows: venv\Scripts\activate
+    pip install -r requirements.txt
+    python agent.py
+

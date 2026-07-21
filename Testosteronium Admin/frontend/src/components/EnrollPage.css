@@ -1,0 +1,125 @@
+.enroll-page {
+  min-height: 100vh;
+  background: #0b0e14;
+  color: #e7ebf3;
+  font-family: "IBM Plex Sans", "Inter", system-ui, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+.enroll-card {
+  max-width: 520px;
+  width: 100%;
+  background: #131822;
+  border: 1px solid #232b3a;
+  border-radius: 14px;
+  padding: 40px 36px;
+}
+
+.enroll-eyebrow {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5b8def;
+  margin: 0 0 14px;
+}
+
+.enroll-title {
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.enroll-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #a6afc2;
+  margin: 0 0 28px;
+}
+
+.enroll-status {
+  color: #8792a6;
+  font-size: 14px;
+}
+
+.enroll-steps {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.enroll-steps li {
+  display: flex;
+  gap: 14px;
+}
+
+.enroll-step-num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(91, 141, 239, 0.15);
+  color: #5b8def;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.enroll-steps strong {
+  display: block;
+  font-size: 14.5px;
+  margin-bottom: 3px;
+}
+
+.enroll-steps p {
+  font-size: 13.5px;
+  color: #8792a6;
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
+
+.enroll-download {
+  display: inline-block;
+  background: #5b8def;
+  color: #0b0e14;
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 9px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+}
+
+.enroll-download:hover {
+  opacity: 0.9;
+}
+
+.enroll-code {
+  display: block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  background: #0f131c;
+  border: 1px solid #232b3a;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #cdd4e0;
+  margin-bottom: 6px;
+  width: fit-content;
+}
+
+.enroll-footnote {
+  font-size: 12.5px;
+  color: #626b7d;
+  border-top: 1px solid #232b3a;
+  padding-top: 16px;
+  margin: 0;
+}
