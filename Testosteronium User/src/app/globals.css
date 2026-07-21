@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@theme {
+  /* Surfaces & structure */
+  --color-canvas: #0b0e14;
+  --color-surface: #131822;
+  --color-surface-2: #0f131c;
+  --color-hair: #232b3a;
+  --color-hair-strong: #2e3850;
+
+  /* Text */
+  --color-ink: #e7ebf3;
+  --color-muted: #8792a6;
+  --color-faint: #5a6478;
+
+  /* Accents */
+  --color-teal: #34d1b4;
+  --color-teal-dim: #1f6b5e;
+
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-hair);
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Faint ops-dashboard grid, fading toward the top via a radial mask */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(to right, rgba(231, 235, 243, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(231, 235, 243, 0.04) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask-image: radial-gradient(ellipse 75% 60% at 50% 0%, #000 0%, transparent 78%);
+    mask-image: radial-gradient(ellipse 75% 60% at 50% 0%, #000 0%, transparent 78%);
+  }
+
+  ::selection {
+    background-color: rgba(52, 209, 180, 0.28);
+    color: #ffffff;
+  }
+}
+
+@layer utilities {
+  .font-mono-tight {
+    font-feature-settings: "zero" 1, "ss01" 1;
+  }
+
+  /* Custom thin scrollbar for the dark theme */
+  .scroll-slim {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-hair-strong) transparent;
+  }
+  .scroll-slim::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scroll-slim::-webkit-scrollbar-thumb {
+    background-color: var(--color-hair-strong);
+    border-radius: 999px;
+  }
+  .scroll-slim::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(52, 209, 180, 0.5); }
+    50% { opacity: 0.55; box-shadow: 0 0 0 4px rgba(52, 209, 180, 0); }
+  }
+  .pulse-dot {
+    animation: pulse-dot 2.4s ease-in-out infinite;
+  }
+
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .toast-in {
+    animation: toast-in 0.18s ease-out both;
+  }
+}
