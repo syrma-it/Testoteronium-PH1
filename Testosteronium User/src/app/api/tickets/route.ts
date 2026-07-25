@@ -83,7 +83,7 @@ export async function POST(req: Request) {
   if (file && file instanceof File && file.size > 0) {
     if (file.size > MAX_ATTACHMENT_BYTES) {
       return Response.json(
-        { error: "Attachment must be 10MB or smaller" },
+        { error: "Attachment too large — please keep it under ~1MB." },
         { status: 413 },
       );
     }
