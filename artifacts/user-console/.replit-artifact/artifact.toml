@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Testosteronium — User Console"
+version = "1.0.0"
+id = "artifacts/user-console"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20625
+
+[services.development]
+run = "pnpm --filter @workspace/user-console run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/user-console", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/user-console/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20625"
+BASE_PATH = "/"

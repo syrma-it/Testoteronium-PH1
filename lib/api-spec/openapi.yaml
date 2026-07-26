@@ -3,20 +3,28 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Testosteronium API — User Console + Admin Console
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: device
+    description: Device identity and system info
+  - name: tickets
+    description: IT support tickets
+  - name: assets
+    description: Asset tracking (admin)
+  - name: enrollment
+    description: Device enrollment tokens
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +32,241 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /device:
+    get:
+      operationId: getDevice
+      tags: [device]
+      summary: Get device identity and system info
+      responses:
+        "200":
+          description: Device info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceInfo"
+
+  /tickets:
+    get:
+      operationId: listTickets
+      tags: [tickets]
+      summary: List tickets scoped to this device
+      parameters:
+        - name: device_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ticket list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketListResponse"
+
+  /tickets/{id}:
+    get:
+      operationId: getTicket
+      tags: [tickets]
+      summary: Get ticket detail with comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: device_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ticket detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketDetailResponse"
+        "404":
+          description: Not found
+
+  /tickets/{id}/comments:
+    post:
+      operationId: addComment
+      tags: [tickets]
+      summary: Add a reply to a ticket
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: device_id
+          in: query
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentInput"
+      responses:
+        "201":
+          description: Comment added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommentResponse"
+
+  /assets/summary:
+    get:
+      operationId: getAssetSummary
+      tags: [assets]
+      summary: Count of each asset type
+      responses:
+        "200":
+          description: Summary counts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssetSummary"
+
+  /assets/tracked:
+    get:
+      operationId: listTrackedAssets
+      tags: [assets]
+      summary: Devices reporting via agent
+      responses:
+        "200":
+          description: Tracked assets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrackedAsset"
+
+  /assets/manual:
+    get:
+      operationId: listManualAssets
+      tags: [assets]
+      summary: Manually entered assets
+      responses:
+        "200":
+          description: Manual assets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ManualAsset"
+    post:
+      operationId: createManualAsset
+      tags: [assets]
+      summary: Add a manual asset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManualAssetInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /assets/manual/{id}:
+    put:
+      operationId: updateManualAsset
+      tags: [assets]
+      summary: Update a manual asset
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManualAssetUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+    delete:
+      operationId: deleteManualAsset
+      tags: [assets]
+      summary: Delete a manual asset (soft)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /assets/fetching:
+    get:
+      operationId: listFetchingAssets
+      tags: [assets]
+      summary: Network-discovered unclaimed devices
+      responses:
+        "200":
+          description: Fetching assets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FetchingAsset"
+
+  /enrollment-tokens:
+    get:
+      operationId: listEnrollmentTokens
+      tags: [enrollment]
+      summary: List enrollment tokens
+      responses:
+        "200":
+          description: Enrollment tokens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EnrollmentToken"
+    post:
+      operationId: createEnrollmentToken
+      tags: [enrollment]
+      summary: Generate a new enrollment token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentTokenInput"
+      responses:
+        "201":
+          description: Token created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnrollmentToken"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +277,265 @@ components:
       required:
         - status
 
+    DeviceInfo:
+      type: object
+      required: [device_id, hostname, username, os_name, connected]
+      properties:
+        device_id:
+          type: string
+        hostname:
+          type: string
+        username:
+          type: string
+        ip_address:
+          type: string
+        mac_address:
+          type: string
+        os_name:
+          type: string
+        os_version:
+          type: string
+        connected:
+          type: boolean
+
+    ClientTicket:
+      type: object
+      required: [id, deviceId, subject, description, category, priority, status, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        deviceId:
+          type: string
+        subject:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        priority:
+          type: string
+        status:
+          type: string
+        assignedAgent:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        attachmentName:
+          type: ["string", "null"]
+        attachmentMime:
+          type: ["string", "null"]
+        attachmentSize:
+          type: ["integer", "null"]
+
+    TicketListResponse:
+      type: object
+      required: [device_id, tickets]
+      properties:
+        device_id:
+          type: string
+        tickets:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClientTicket"
+
+    ClientComment:
+      type: object
+      required: [id, ticketId, author, authorRole, body, createdAt]
+      properties:
+        id:
+          type: integer
+        ticketId:
+          type: integer
+        author:
+          type: string
+        authorRole:
+          type: string
+        body:
+          type: string
+        createdAt:
+          type: string
+
+    TicketDetailResponse:
+      type: object
+      required: [ticket, comments]
+      properties:
+        ticket:
+          $ref: "#/components/schemas/ClientTicket"
+        comments:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClientComment"
+
+    CommentInput:
+      type: object
+      required: [body]
+      properties:
+        body:
+          type: string
+        author:
+          type: string
+
+    CommentResponse:
+      type: object
+      required: [comment, status]
+      properties:
+        comment:
+          $ref: "#/components/schemas/ClientComment"
+        status:
+          type: string
+
+    AssetSummary:
+      type: object
+      required: [tracked, manual, fetching]
+      properties:
+        tracked:
+          type: integer
+        manual:
+          type: integer
+        fetching:
+          type: integer
+
+    TrackedAsset:
+      type: object
+      required: [id, hostname, ip, status]
+      properties:
+        id:
+          type: integer
+        hostname:
+          type: string
+        username:
+          type: ["string", "null"]
+        ip:
+          type: string
+        mac_address:
+          type: ["string", "null"]
+        serial:
+          type: ["string", "null"]
+        os:
+          type: ["string", "null"]
+        specs:
+          type: ["string", "null"]
+        status:
+          type: string
+        first_seen:
+          type: string
+        last_seen:
+          type: string
+        enrolled_via_token:
+          type: ["string", "null"]
+
+    ManualAsset:
+      type: object
+      required: [id, name, source]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: ["string", "null"]
+        owner:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+        serial:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        source:
+          type: string
+        addedOn:
+          type: string
+
+    ManualAssetInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        owner:
+          type: string
+        location:
+          type: string
+        serial:
+          type: string
+        notes:
+          type: string
+
+    ManualAssetUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        owner:
+          type: string
+        location:
+          type: string
+        serial:
+          type: string
+        notes:
+          type: string
+
+    FetchingAsset:
+      type: object
+      required: [id, ip, mac]
+      properties:
+        id:
+          type: integer
+        ip:
+          type: string
+        mac:
+          type: string
+        guess:
+          type: ["string", "null"]
+        os_guess:
+          type: ["string", "null"]
+        connection:
+          type: ["string", "null"]
+        first_seen:
+          type: string
+        last_seen:
+          type: string
+
+    EnrollmentToken:
+      type: object
+      required: [token, created_at, expires_at, status]
+      properties:
+        token:
+          type: string
+        label:
+          type: ["string", "null"]
+        created_at:
+          type: string
+        expires_at:
+          type: string
+        used_at:
+          type: ["string", "null"]
+        used_by_mac:
+          type: ["string", "null"]
+        status:
+          type: string
+
+    EnrollmentTokenInput:
+      type: object
+      required: [expires_hours]
+      properties:
+        label:
+          type: string
+        expires_hours:
+          type: integer
+
+    OkResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+        id:
+          type: ["integer", "null"]

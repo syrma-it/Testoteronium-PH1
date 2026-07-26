@@ -1,2 +1,2 @@
+// Only export Zod schemas for server-side validation
 export * from "./generated/api";
-export * from "./generated/types";
